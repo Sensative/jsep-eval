@@ -1,7 +1,7 @@
 {
   "name": "jsep-eval",
   "version": "1.0.0",
-  "description": "A configurable eval function, which uses jsep to parse expressions. The generated result is evaluated within a supplied object context.",
+  "description": "A configurable eval function, which uses jsep to parse expressions. The generated result is evaluated w.r.t. a supplied object context.",
   "main": "src/jsep-eval.js",
   "scripts": {
     "test": "mocha test/jsep-eval.test"
