@@ -1,6 +1,7 @@
 // tests
 
 const _ = require('lodash');
+const expect = require('chai').expect;
 const evaluate = require('../src/jsep-eval').evaluate;
 
 let ctx, exp, res;
@@ -43,13 +44,3 @@ describe('======== ' + name + ' =========', () => {
     expect(evaluate(exp, ctx)).to.equal(7);
   });
 });
-
-ctx = {
-  a: {b: {c: 7}},
-  b: {d: 'e'},
-  c: 'd',
-  d: {e: 'c'}
-};
-exp = 'a.b[d[b[c]]]'; // 7
-res = evaluate(exp, ctx);
-console.log('res ' + exp + ' = ', res);
