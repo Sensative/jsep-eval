@@ -156,10 +156,6 @@ const evaluateExpressionNode = (node, context) => {
 };
 
 const evaluate = (expression, context) => {
-  // if no expression, then true
-  if (!expression) {
-    return true;
-  }
   const tree = jsep(expression);
   return evaluateExpressionNode(tree, context);
 };
