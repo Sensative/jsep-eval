@@ -4,7 +4,7 @@
   "description": "A configurable eval function, which uses jsep to parse expressions. The generated result is evaluated within a supplied object context.",
   "main": "src/jsep-eval.js",
   "scripts": {
-    "test": "Mocha test"
+    "test": "mocha test/jsep-eval.test"
   },
   "repository": {
     "type": "git",

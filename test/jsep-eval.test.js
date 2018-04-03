@@ -6,7 +6,7 @@ const evaluate = require('../src/jsep-eval').evaluate;
 
 const EPSILON = 0.0000001;
 
-const name = 'condition-evaluator';
+const name = 'jsep-eval';
 describe('======== ' + name + ' =========', () => {
   it(name + ': evaluate a literal expression', () => {
     const exp = '43.4';
