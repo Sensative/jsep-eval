@@ -132,9 +132,6 @@ const evaluateExpressionNode = (node, context) => {
       const test = evaluateExpressionNode(node.test, context);
       const consequent = evaluateExpressionNode(node.consequent, context);
       const alternate = evaluateExpressionNode(node.alternate, context);
-      assert(test, 'test argument is missing');
-      assert(consequent, 'consequent argument is missing');
-      assert(alternate, 'alternate argument is missing');
       return test ? consequent : alternate;
     }
     case types.CALL : {
