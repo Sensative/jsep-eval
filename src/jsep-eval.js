@@ -126,8 +126,6 @@ const evaluateExpressionNode = (node, context) => {
       assert(_.includes(operators.binary, operator), 'Invalid binary operator');
       const left = evaluateExpressionNode(node.left, context);
       const right = evaluateExpressionNode(node.right, context);
-      assert(left, 'left argument is missing');
-      assert(right, 'right argument is missing');
       return operator(left, right);
     }
     case types.CONDITIONAL: {
