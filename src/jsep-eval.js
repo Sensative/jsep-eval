@@ -120,8 +120,8 @@ const evaluateExpressionNode = (node, context) => {
       assert(argument, 'argument is missing');
       return operator(argument);
     }
-    case types.BINARY: // !!! fall-through to LOGICAL !!! //
-    case types.LOGICAL: {
+    case types.LOGICAL: // !!! fall-through to BINARY !!! //
+    case types.BINARY: {
       const operator = operators.binary[node.operator] || undefOperator;
       assert(_.includes(operators.binary, operator), 'Invalid binary operator');
       const left = evaluateExpressionNode(node.left, context);
