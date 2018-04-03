@@ -160,8 +160,14 @@ const evaluate = (expression, context) => {
   return evaluateExpressionNode(tree, context);
 };
 
+const peval = (expression, context) => {
+  return Promise.resolve()
+    .then(() => evaluate(expression, context));
+};
+
 module.exports = {
   evaluate,
+  peval,
   types,
   operators
 };
