@@ -62,9 +62,9 @@ const getParameterPath = (node, context) => {
   assert(node, 'Node missing');
   const type = node.type;
   assert(_.includes(types, type), 'invalid node type');
-  assert(_.includes([type.MEMBER, type.IDENTIFIER], type), 'Invalid node type');
+  assert(_.includes([types.MEMBER, types.IDENTIFIER], type), 'Invalid parameter path node type: ', type);
   // the easy case: 'IDENTIFIER's
-  if (type === type.IDENTIFIER) {
+  if (type === types.IDENTIFIER) {
     return node.name;
   }
   // Otherwise it's a MEMBER expression
@@ -74,11 +74,11 @@ const getParameterPath = (node, context) => {
   const object = node.object;
   const property = node.property;
   // object is either 'IDENTIFIER', 'MEMBER', or 'THIS'
-  assert(_.includes([type.MEMBER, type.IDENTIFIER, type.THIS], object.type), 'Invalid object type');
+  assert(_.includes([types.MEMBER, types.IDENTIFIER, types.THIS], object.type), 'Invalid object type');
   assert(property, 'Member expression property is missing');
 
   let objectPath = '';
-  if (object.type === type.THIS) {
+  if (object.type === types.THIS) {
     objectPath = '';
   } else {
     objectPath = node.name || getParameterPath(object, context);
@@ -89,7 +89,7 @@ const getParameterPath = (node, context) => {
     const propertyPath = evaluateExpressionNode(property, context);
     return objectPath + '[' + propertyPath + ']';
   } else {
-    assert(_.includes([type.MEMBER, type.IDENTIFIER], property.type), 'Invalid object type');
+    assert(_.includes([types.MEMBER, types.IDENTIFIER], property.type), 'Invalid object type');
     const propertyPath = property.name || getParameterPath(property, context);
     return (objectPath ? objectPath + '.': '') + propertyPath;
   }
@@ -97,7 +97,7 @@ const getParameterPath = (node, context) => {
 
 const evaluateExpressionNode = (node, context) => {
   assert(node, 'Node missing');
-  assert(_.includes(types, type), 'invalid node type');
+  assert(_.includes(types, node.type), 'invalid node type');
   switch (node.type) {
     case types.LITERAL: {
       return node.value;
@@ -139,8 +139,8 @@ const evaluateExpressionNode = (node, context) => {
       assert(alternate, 'alternate argument is missing');
       return test ? consequent : alternate;
     }
-    case type.CALL : {
-      assert(_.includes([type.MEMBER, type.IDENTIFIER, type.THIS], node.callee.type), 'Invalid function callee type');
+    case types.CALL : {
+      assert(_.includes([types.MEMBER, types.IDENTIFIER, types.THIS], node.callee.type), 'Invalid function callee type');
       const callee = evaluateExpressionNode(node.callee, context);
       const args = _.map(node.arguments, arg => evaluateExpressionNode(arg, context));
       return callee.apply(null, args);
