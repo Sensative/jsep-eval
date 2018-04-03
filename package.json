@@ -1,0 +1,24 @@
+{
+  "name": "jsep-eval",
+  "version": "1.0.0",
+  "description": "A configurable eval function, which uses jsep to parse expressions. The generated result is evaluated within a supplied object context.",
+  "main": "src/jsep-eval.js",
+  "scripts": {
+    "test": "Mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "notyet"
+  },
+  "keywords": [
+    "jsep",
+    "eval"
+  ],
+  "author": "Fredrik Carlsson",
+  "license": "ISC",
+  "dependencies": {
+    "assert": "^1.4.1",
+    "jsep": "^0.3.3",
+    "lodash": "^4.17.5"
+  }
+}
