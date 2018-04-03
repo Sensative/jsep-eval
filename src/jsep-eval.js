@@ -6,7 +6,7 @@ const _ = require('lodash');
 const jsep = require('jsep');
 const assert = require('assert');
 
-operators = {
+const operators = {
   binary: {
     '===': (a, b) => (a === b),
     '!==': (a, b) => (a !== b),
@@ -30,7 +30,7 @@ operators = {
     '>>>': (a, b) => (a >>> b), // zero-fill right shift
     // Let's make a home for the logical operators here as well
     '||': (a, b) => (a || b),
-    '&&': (a, b) => (a || b),
+    '&&': (a, b) => (a && b),
   },
   unary: {
     '!': a => !a,
@@ -52,11 +52,9 @@ const types = {
   MEMBER: 'MemberExpression',
   IDENTIFIER: 'Identifier',
   THIS: 'ThisExpression', // e.g. 'this.willBeUsed'
-  // unsupported:
   CALL: 'CallExpression', // e.g. whatcha(doing)
-  // CallExpression     'asdf(2)'
-  // ArrayExpression    '[a, 2, 3]'
-  // Compound     'a===2, b===3' <-- multiple comma separated expressions.. returns last
+  ARRAY: 'ArrayExpression', // e.g. [a, 2, g(h), 'etc']
+  COMPOUND: 'Compound' // 'a===2, b===3' <-- multiple comma separated expressions.. returns last
 };
 const undefOperator = () => undefined;
 
@@ -107,6 +105,14 @@ const evaluateExpressionNode = (node, context) => {
     case types.THIS: {
       return context;
     }
+    case types.COMPOUND: {
+      const expressions = _.map(node.body, el => evaluateExpressionNode(el, context));
+      return expressions.pop();
+    }
+    case types.ARRAY: {
+      const elements = _.map(node.elements, el => evaluateExpressionNode(el, context));
+      return elements;
+    }
     case types.UNARY: {
       const operator = operators.unary[node.operator] || undefOperator;
       assert(_.includes(operators.unary, operator), 'Invalid unary operator');
@@ -117,7 +123,7 @@ const evaluateExpressionNode = (node, context) => {
     case types.BINARY: // !!! fall-through to LOGICAL !!! //
     case types.LOGICAL: {
       const operator = operators.binary[node.operator] || undefOperator;
-      assert(_.includes(operators.unary, operator), 'Invalid binary operator');
+      assert(_.includes(operators.binary, operator), 'Invalid binary operator');
       const left = evaluateExpressionNode(node.left, context);
       const right = evaluateExpressionNode(node.right, context);
       assert(left, 'left argument is missing');
@@ -134,7 +140,10 @@ const evaluateExpressionNode = (node, context) => {
       return test ? consequent : alternate;
     }
     case type.CALL : {
-      const
+      assert(_.includes([type.MEMBER, type.IDENTIFIER, type.THIS], node.callee.type), 'Invalid function callee type');
+      const callee = evaluateExpressionNode(node.callee, context);
+      const args = _.map(node.arguments, arg => evaluateExpressionNode(arg, context));
+      return callee.apply(null, args);
     }
     case types.IDENTIFIER: // !!! fall-through to MEMBER !!! //
     case types.MEMBER: {
