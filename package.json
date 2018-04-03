@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "notyet"
+    "url": "https://github.com/Sensative/jsep-eval"
   },
   "keywords": [
     "jsep",
     "eval"
   ],
   "author": "Fredrik Carlsson",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "assert": "^1.4.1",
     "jsep": "^0.3.3",
