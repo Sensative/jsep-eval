@@ -117,7 +117,6 @@ const evaluateExpressionNode = (node, context) => {
       const operator = operators.unary[node.operator] || undefOperator;
       assert(_.includes(operators.unary, operator), 'Invalid unary operator');
       const argument = evaluateExpressionNode(node.argument, context);
-      assert(argument, 'argument is missing');
       return operator(argument);
     }
     case types.LOGICAL: // !!! fall-through to BINARY !!! //

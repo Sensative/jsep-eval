@@ -117,4 +117,12 @@ describe('======== ' + name + ' =========', () => {
     expect(evaluate.bind(null, exp)).to.throw();
     ops['!'] = negate; // reset;
   });
+  it(name + ': should be possible to replace an operator', () => {
+    const ops = require('../src/jsep-eval').operators.unary;
+    const negate = ops['!'];
+    ops['!'] = () => 'bob';
+    const exp = '!false';
+    expect(evaluate(exp)).to.equal('bob');
+    ops['!'] = negate; // reset;
+  });
 });
