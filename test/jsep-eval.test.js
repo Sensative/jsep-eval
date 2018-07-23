@@ -112,7 +112,7 @@ describe('======== ' + name + ' =========', () => {
       const bin = types.BINARY;
       delete types.BINARY;
       const exp = '2 + 2';
-      expect(evaluate.bind(null, exp)).to.throw();
+      expect(() => evaluate(exp)).to.throw();
       types.BINARY = bin; // reset
     });
     it(name + ': should be possible to remove an binary operator', () => {
@@ -120,7 +120,7 @@ describe('======== ' + name + ' =========', () => {
       const equality = ops['==='];
       delete ops['==='];
       const exp = '2 === 2';
-      expect(evaluate.bind(null, exp)).to.throw();
+      expect(() => evaluate(exp)).to.throw();
       ops['==='] = equality; // reset;
     });
     it(name + ': should be possible to remove an unary operator', () => {
@@ -128,7 +128,7 @@ describe('======== ' + name + ' =========', () => {
       const negate = ops['!'];
       delete ops['!'];
       const exp = '!true';
-      expect(evaluate.bind(null, exp)).to.throw();
+      expect(() => evaluate(exp)).to.throw();
       ops['!'] = negate; // reset;
     });
     it(name + ': should be possible to replace an operator', () => {
