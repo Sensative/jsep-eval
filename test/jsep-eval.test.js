@@ -2,7 +2,8 @@
 
 const _ = require('lodash');
 const expect = require('chai').expect;
-const evaluate = require('../src/jsep-eval').evaluate;
+const {evaluate, peval} = require('../src/jsep-eval');
+const rejects = require('assert-rejects');
 
 const EPSILON = 0.0000001;
 
@@ -137,6 +138,23 @@ describe('======== ' + name + ' =========', () => {
       const exp = '!false';
       expect(evaluate(exp)).to.equal('bob');
       ops['!'] = negate; // reset;
+    });
+  });
+
+  describe('\n\t=== peval (promise wrapper) ===', () => {
+    it('should reject for case where evaluate throws an error', () => {
+      const ctx = {
+        a: {b: {c: {d: 3}}},
+      };
+      const exp = 'a ***';
+      rejects(peval(exp, ctx));
+    });
+
+    it('should evaluate correctly (example taken from above)', () => {
+      return peval('4 === 4')
+        .then(res => {
+          expect(res).to.be.true;
+        });
     });
   });
 });
