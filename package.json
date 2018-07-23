@@ -4,7 +4,8 @@
   "description": "A configurable eval function, which uses jsep to parse expressions. The generated result is evaluated w.r.t. a supplied object context.",
   "main": "src/jsep-eval.js",
   "scripts": {
-    "test": "mocha test/jsep-eval.test"
+    "test": "mocha test/jsep-eval.test",
+    "test-watch": "mocha test/jsep-eval.test --watch"
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,6 @@
   "author": "Fredrik Carlsson",
   "license": "MIT",
   "dependencies": {
-    "assert": "^1.4.1",
     "jsep": "^0.3.3",
     "lodash": "^4.17.5"
   },

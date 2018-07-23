@@ -154,6 +154,7 @@ const evaluate = (expression, context) => {
   return evaluateExpressionNode(tree, context);
 };
 
+// is just a promise wrapper
 const peval = (expression, context) => {
   return Promise.resolve()
     .then(() => evaluate(expression, context));
