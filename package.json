@@ -1,6 +1,6 @@
 {
   "name": "@sensative/jsep-eval",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A configurable eval function, which uses jsep to parse expressions. The generated result is evaluated w.r.t. a supplied object context.",
   "main": "src/jsep-eval.js",
   "scripts": {
