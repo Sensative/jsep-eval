@@ -1,6 +1,6 @@
 {
   "name": "@sensative/jsep-eval",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "A configurable eval function, which uses jsep to parse expressions. The generated result is evaluated w.r.t. a supplied object context.",
   "main": "src/jsep-eval.js",
   "scripts": {
@@ -18,13 +18,12 @@
   "author": "Fredrik Carlsson",
   "license": "MIT",
   "dependencies": {
-    "jsep": "^0.3.3",
-    "lodash": "^4.17.5"
+    "jsep": "^1.0.0"
   },
   "devDependencies": {
     "assert-rejects": "^0.1.1",
     "chai": "^4.1.2",
-    "mocha": "^5.0.5"
+    "mocha": "^10.0.0"
   },
   "bugs": {
     "url": "https://github.com/Sensative/jsep-eval/issues"
