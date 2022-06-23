@@ -1,6 +1,5 @@
 // tests
 
-const _ = require('lodash');
 const expect = require('chai').expect;
 const {evaluate, peval} = require('../src/jsep-eval');
 const rejects = require('assert-rejects');

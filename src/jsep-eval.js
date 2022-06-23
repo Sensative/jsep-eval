@@ -2,7 +2,6 @@
 // evaluates javascript expression statements parsed with jsep
 //
 
-const _ = require('lodash');
 const jsep = require('jsep');
 const assert = require('assert');
 
@@ -61,8 +60,8 @@ const undefOperator = () => undefined;
 const getParameterPath = (node, context) => {
   assert(node, 'Node missing');
   const type = node.type;
-  assert(_.includes(types, type), 'invalid node type');
-  assert(_.includes([types.MEMBER, types.IDENTIFIER], type), 'Invalid parameter path node type: ', type);
+  assert(Object.values(types).includes(type), 'invalid node type');
+  assert([types.MEMBER, types.IDENTIFIER].includes(type), 'Invalid parameter path node type: ', type);
   // the easy case: 'IDENTIFIER's
   if (type === types.IDENTIFIER) {
     return node.name;
@@ -74,7 +73,7 @@ const getParameterPath = (node, context) => {
   const object = node.object;
   const property = node.property;
   // object is either 'IDENTIFIER', 'MEMBER', or 'THIS'
-  assert(_.includes([types.MEMBER, types.IDENTIFIER, types.THIS], object.type), 'Invalid object type');
+  assert([types.MEMBER, types.IDENTIFIER, types.THIS].includes(object.type), 'Invalid object type');
   assert(property, 'Member expression property is missing');
 
   let objectPath = '';
@@ -89,7 +88,7 @@ const getParameterPath = (node, context) => {
     const propertyPath = evaluateExpressionNode(property, context);
     return objectPath + '[' + propertyPath + ']';
   } else {
-    assert(_.includes([types.MEMBER, types.IDENTIFIER], property.type), 'Invalid object type');
+    assert([types.MEMBER, types.IDENTIFIER].includes(property.type), 'Invalid object type');
     const propertyPath = property.name || getParameterPath(property, context);
     return (objectPath ? objectPath + '.': '') + propertyPath;
   }
@@ -97,7 +96,7 @@ const getParameterPath = (node, context) => {
 
 const evaluateExpressionNode = (node, context) => {
   assert(node, 'Node missing');
-  assert(_.includes(types, node.type), 'invalid node type');
+  assert(Object.values(types).includes(node.type), 'invalid node type '+node.type);
   switch (node.type) {
     case types.LITERAL: {
       return node.value;
@@ -106,23 +105,23 @@ const evaluateExpressionNode = (node, context) => {
       return context;
     }
     case types.COMPOUND: {
-      const expressions = _.map(node.body, el => evaluateExpressionNode(el, context));
+      const expressions = node.body.map( el => evaluateExpressionNode(el, context));
       return expressions.pop();
     }
     case types.ARRAY: {
-      const elements = _.map(node.elements, el => evaluateExpressionNode(el, context));
+      const elements = node.elements.map( el => evaluateExpressionNode(el, context));
       return elements;
     }
     case types.UNARY: {
       const operator = operators.unary[node.operator] || undefOperator;
-      assert(_.includes(operators.unary, operator), 'Invalid unary operator');
+      assert(operators.unary.hasOwnProperty(node.operator), 'Invalid unary operator: '+operator);
       const argument = evaluateExpressionNode(node.argument, context);
       return operator(argument);
     }
     case types.LOGICAL: // !!! fall-through to BINARY !!! //
     case types.BINARY: {
       const operator = operators.binary[node.operator] || undefOperator;
-      assert(_.includes(operators.binary, operator), 'Invalid binary operator');
+      assert(operators.binary.hasOwnProperty(node.operator), 'Invalid binary operator: '+operator);
       const left = evaluateExpressionNode(node.left, context);
       const right = evaluateExpressionNode(node.right, context);
       return operator(left, right);
@@ -134,20 +133,48 @@ const evaluateExpressionNode = (node, context) => {
       return test ? consequent : alternate;
     }
     case types.CALL : {
-      assert(_.includes([types.MEMBER, types.IDENTIFIER, types.THIS], node.callee.type), 'Invalid function callee type');
+      assert([types.MEMBER, types.IDENTIFIER, types.THIS].includes(node.callee.type), 'Invalid function callee type');
       const callee = evaluateExpressionNode(node.callee, context);
-      const args = _.map(node.arguments, arg => evaluateExpressionNode(arg, context));
+      const args = node.arguments.map( arg => evaluateExpressionNode(arg, context));
       return callee.apply(null, args);
     }
     case types.IDENTIFIER: // !!! fall-through to MEMBER !!! //
     case types.MEMBER: {
       const path = getParameterPath(node, context);
-      return _.get(context, path);
+      return get1(context, path);
     }
     default:
       return undefined;
   }
 };
+
+// https://gist.github.com/jeneg/9767afdcca45601ea44930ea03e0febf?permalink_comment_id=2733468
+
+function get1(obj, path, def) {
+	var fullPath = path
+		.replace(/\[/g, '.')
+		.replace(/]/g, '')
+		.split('.')
+		.filter(Boolean);
+
+	return fullPath.every(everyFunc) ? obj : def;
+
+	function everyFunc(step) {
+		return !(step && (obj = obj[step]) === undefined);
+	}
+}
+
+// . accessor only
+const get3 = (value, path, defaultValue) => {
+  return String(path).split('.').reduce((acc, v) => {
+    try {
+      acc = acc[v]
+    } catch (e) {
+      return defaultValue
+    }
+    return acc
+  }, value)
+}
 
 const evaluate = (expression, context) => {
   const tree = jsep(expression);
